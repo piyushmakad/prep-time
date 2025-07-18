@@ -3,8 +3,9 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { vapi } from "@/lib/vapi.sdk";
-import { interviewer, generator } from "@/constants";
-import { useRouter } from "next/navigation";
+import { interviewer } from "@/constants";
+import { useRouter, useServerInsertedHTML } from "next/navigation";
+import { createFeedback } from "@/actions/general.action";
 enum CallStatus {
   INACTIVE = "INACTIVE",
   CONNECTING = "CONNECTING",
@@ -77,9 +78,36 @@ const Agent = ({
       vapi.off("error", onError);
     };
   }, []);
+  const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+    console.log("Generating feedback");
+
+    const { success, feedbackId: id } = await createFeedback({
+      interviewId: interviewId!,
+      userId: userId!,
+      transcript: messages,
+      feedbackId,
+    });
+    if (success && id) {
+      console.log("Feedback generated successfully with ID:", id);
+      router.push(`/interview/${interviewId}/feedback`);
+    } else {
+      console.error("Failed to generate feedback");
+      router.push(`/`);
+    }
+  };
+  useEffect(() => {
+    if (callStatus === CallStatus.FINISHED) {
+      if (type === "generate") {
+        router.push("/");
+      } else {
+        handleGenerateFeedback(messages);
+      }
+    }
+  }, [messages, callStatus, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
+    console.log("Starting call with type:", userName, userId);
 
     if (type === "generate") {
       vapi.start(
