@@ -2,6 +2,7 @@ import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { db } from "@/firebase/admin";
+import { getCurrentUser } from "@/actions/auth.action";
 
 export async function GET() {
   return Response.json(
@@ -11,7 +12,16 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { type, role, techstack, level, amount, userid } = await request.json();
+  console.log("POST request received at /api/vapi/generate");
+  const user = await getCurrentUser();
+  if (!user) {
+    return Response.json(
+      { success: false, message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const userid = user.id;
+  const { type, role, techstack, level, amount } = await request.json();
   try {
     const { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
