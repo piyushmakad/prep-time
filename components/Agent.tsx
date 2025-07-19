@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
-import { useRouter, useServerInsertedHTML } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createFeedback } from "@/actions/general.action";
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -114,7 +114,7 @@ const Agent = ({
         undefined,
         undefined,
         undefined,
-        process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
+        process.env.VAPI_WORKFLOW_ID!,
         {
           variableValues: {
             username: userName,
