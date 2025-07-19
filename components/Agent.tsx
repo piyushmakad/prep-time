@@ -103,7 +103,7 @@ const Agent = ({
         handleGenerateFeedback(messages);
       }
     }
-  }, [messages, callStatus, type, userId]);
+  }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);

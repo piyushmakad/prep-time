@@ -41,30 +41,32 @@ const page = async () => {
         />
       </section>
 
-      <section className="flex flex-col gap-6 max-w-lg">
-        <h2>Your Interviews</h2>
-        <div className="interviews-section">
-          {hasPastInterviews ? (
-            userInterviews?.map((interview) => (
-              <InterviewCard {...interview} key={interview.id} />
-            ))
-          ) : (
-            <p>You haven&apos;t taken any interviews yet</p>
-          )}
-        </div>
-      </section>
-      <section className="flex flex-col gap-6 max-w-lg">
-        <h2>Take an Interview</h2>
-        <div className="interviews-section">
-          {hasUpcomingInterviews ? (
-            latestInterviews?.map((interview) => (
-              <InterviewCard {...interview} key={interview.id} />
-            ))
-          ) : (
-            <p>No upcoming interviews</p>
-          )}
-        </div>
-      </section>
+      <div className="flex flex-row gap-8 justify-between max-sm:flex-col">
+        <section className="flex flex-col gap-6 max-w-lg">
+          <h2>Your Interviews</h2>
+          <div className=" flex flex-wrap gap-8 max-lg:flex-col w-full items-stretch">
+            {hasPastInterviews ? (
+              userInterviews?.map((interview) => (
+                <InterviewCard {...interview} key={interview.id} />
+              ))
+            ) : (
+              <p>You haven&apos;t taken any interviews yet</p>
+            )}
+          </div>
+        </section>
+        <section className="flex flex-col gap-6 max-w-lg">
+          <h2>Take an Interview</h2>
+          <div className="flex flex-wrap gap-8 max-lg:flex-col w-full items-stretch">
+            {hasUpcomingInterviews ? (
+              latestInterviews?.map((interview) => (
+                <InterviewCard {...interview} key={interview.id} />
+              ))
+            ) : (
+              <p>No upcoming interviews</p>
+            )}
+          </div>
+        </section>
+      </div>
     </>
   );
 };
