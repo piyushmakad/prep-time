@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PrepTime
 
-## Getting Started
+**Practice job interviews with an AI voice interviewer and structured feedback.**
 
-First, run the development server:
+[Try the live app](https://prep-time.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+PrepTime lets a candidate choose a role, experience level, tech stack, and interview type. Gemini generates relevant questions, a Vapi voice agent conducts the interview, and Gemini turns the transcript into scored feedback. Firebase handles authentication and stores interviews and feedback.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How it works
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. The candidate chooses an interview role, level, tech stack, question count, and technical or behavioral focus.
+2. The [question-generation route](app/api/vapi/generate/route.ts) uses Gemini to create interview questions and stores the interview in Firestore.
+3. The [voice agent](components/Agent.tsx) runs the interview with Vapi and captures the conversation transcript.
+4. The [feedback action](actions/general.action.ts) uses Gemini structured output to score communication, technical knowledge, problem-solving, role fit, and confidence. It stores strengths, improvement areas, and a final assessment in Firestore.
+5. Signed-in users can revisit their interview history and feedback.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+Next.js, React, TypeScript, Vapi, Gemini via the AI SDK, Firebase Authentication, Firestore, and Tailwind CSS.
 
-To learn more about Next.js, take a look at the following resources:
+## Run locally
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Install Node.js and run `npm install`.
+2. Create a Firebase project and a Vapi account. Configure the Firebase client and admin credentials, a Gemini API key, and the Vapi public/private keys in `.env.local`. The application reads the required variable names from [`firebase/client.ts`](firebase/client.ts), [`firebase/admin.ts`](firebase/admin.ts), [`lib/vapi.sdk.ts`](lib/vapi.sdk.ts), and the AI generation routes.
+3. Run `npm run dev` and open `http://localhost:3000`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Do not commit service-account keys or API keys. Voice interviews and model calls require the external services above.
